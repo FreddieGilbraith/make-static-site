@@ -57,10 +57,11 @@
 		"lint-staged": "^11.0.0"
 	},
 	"dependencies": {
-		"prettier": "^2.3.1",
 		"@iarna/toml": "^2.2.5",
 		"@little-bonsai/tailwind-config": "^0.1.3",
 		"arg": "^5.0.0",
+		"mime-types": "^2.1.31",
+		"prettier": "^2.3.1",
 		"tailwindcss-cli": "^0.1.2"
 	}
 }

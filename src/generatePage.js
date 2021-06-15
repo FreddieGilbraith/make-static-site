@@ -47,7 +47,7 @@ function generateEpisodeLink({
 		<div class="flex">
 			<a
 				class="pointer-events-auto cursor-pointer underline text-blue-900 hover:text-blue-700 hover:bold"
-				href="https://traffic.libsyn.com/secure/plaguetown/001-episode.mp3"
+				href="${links.rss}"
 				title="listen"
 			>
 				listen

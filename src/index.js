@@ -9,6 +9,7 @@ import prettier from "prettier";
 import generatePage from "./generatePage.js";
 import writeStylesheet from "./writeStylesheet.js";
 import runTailwind from "./runTailwind.js";
+import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -38,11 +39,10 @@ function generateFeedForEpisodePage(feed, episode) {
 }
 
 async function main(opts) {
-	console.log(path.join(process.cwd(), opts["--feed"]));
-
 	const feed = await fs
 		.readFile(path.join(process.cwd(), opts["--feed"]), "utf8")
-		.then(toml.parse);
+		.then(toml.parse)
+		.then(internalizeExternaFilesFromFeed.bind(null, opts));
 
 	await fs.mkdir(opts["--out-dir"], { recursive: true });
 
@@ -65,6 +65,7 @@ main(
 		{
 			"--feed": String,
 			"--out-dir": String,
+			"--import-files": Boolean,
 		},
 		{ permissive: true, argv: process.argv.slice(2) },
 	),
