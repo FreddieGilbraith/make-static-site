@@ -1,12 +1,11 @@
 export default function makeDocumentHead(feed) {
 	return `
-
 <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 ${feed.fonts
 	.map(
 		(font) =>
-			`<link rel="preload" href="${font}" as="font" crossorigin="anonymous" />`,
+			`<link rel="preload" href="/fonts${font}" as="font" crossorigin="anonymous" />`,
 	)
 	.join("\n")}
 
@@ -21,7 +20,9 @@ ${feed.fonts
 <meta name="rating" content="General" />
 <meta name="referrer" content="no-referrer" />
 <meta name="robots" content="index,follow" />
-<script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>
+${
+	"" /*<script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>*/
+}
 <link rel="icon" sizes="16x16" href="/logos/Square@16.png" />
 <link rel="icon" sizes="32x32" href="/logos/Square@32.png" />
 <link rel="icon" sizes="64x64" href="/logos/Square@64.png" />
@@ -49,8 +50,6 @@ ${feed.fonts
 <meta property="og:image" />
 <meta property="og:description" content="${feed.subtitle}" />
 
-<style>
-.episodePreviewContainer:hover > .episodePreviewSlideout { --tw-translate-x: 0rem; }
-</style>
+<link href="/main.css" rel="stylesheet">
 `;
 }

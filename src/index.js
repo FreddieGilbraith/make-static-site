@@ -3,8 +3,9 @@ import toml from "@iarna/toml";
 import fs from "fs/promises";
 import path from "path";
 
-import generateHomepage from "./generateHomepage.js";
-import generateEpisodePage from "./generateEpisodePage.js";
+import generatePage from "./generatePage.js";
+
+import writeStylesheet from "./writeStylesheet.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -28,15 +29,29 @@ async function main(opts) {
 
 	await fs.mkdir(opts["--out-dir"], { recursive: true });
 
-	await writePage(opts, "/", generateHomepage(opts, feed));
+	await writePage(opts, "/", generatePage(opts, feed));
 
 	for (const episode of feed.episodes) {
+		const pageFeed = {
+			...feed,
+			...episode,
+			links: {
+				...feed.links,
+				...episode.links,
+			},
+			episodes: [episode],
+		};
+
+		console.log(pageFeed);
+
 		await writePage(
 			opts,
 			`/episode/${episode.slug}`,
-			generateEpisodePage(opts, feed, episode),
+			generatePage(opts, pageFeed),
 		);
 	}
+
+	await writeStylesheet(opts);
 }
 
 main(
