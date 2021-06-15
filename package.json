@@ -10,6 +10,9 @@
 		"prepushOnly": "npm run format",
 		"prepublishOnly": "npm run format"
 	},
+	"bin": {
+		"make-staic-site": "src/index.js"
+	},
 	"author": "",
 	"license": "ISC",
 	"sideEffects": false,
