@@ -2,10 +2,11 @@ import arg from "arg";
 import toml from "@iarna/toml";
 import fs from "fs/promises";
 import path from "path";
+import prettier from "prettier";
 
 import generatePage from "./generatePage.js";
-
 import writeStylesheet from "./writeStylesheet.js";
+import runTailwind from "./runTailwind.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -17,7 +18,21 @@ async function writePage(opts, pagePath, html) {
 	const dirPath = path.dirname(outPath);
 	await fs.mkdir(dirPath, { recursive: true });
 
-	await fs.writeFile(outPath, html);
+	const formattedHtml = prettier.format(html, { parser: "html" });
+
+	await fs.writeFile(outPath, formattedHtml);
+}
+
+function generateFeedForEpisodePage(feed, episode) {
+	return {
+		...feed,
+		...episode,
+		links: {
+			...feed.links,
+			...episode.links,
+		},
+		episodes: [episode],
+	};
 }
 
 async function main(opts) {
@@ -32,26 +47,15 @@ async function main(opts) {
 	await writePage(opts, "/", generatePage(opts, feed));
 
 	for (const episode of feed.episodes) {
-		const pageFeed = {
-			...feed,
-			...episode,
-			links: {
-				...feed.links,
-				...episode.links,
-			},
-			episodes: [episode],
-		};
-
-		console.log(pageFeed);
-
 		await writePage(
 			opts,
 			`/episode/${episode.slug}`,
-			generatePage(opts, pageFeed),
+			generatePage(opts, generateFeedForEpisodePage(feed, episode)),
 		);
 	}
 
 	await writeStylesheet(opts);
+	await runTailwind(opts);
 }
 
 main(

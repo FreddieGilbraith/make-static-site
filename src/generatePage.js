@@ -109,6 +109,7 @@ export default function generateHomepage(opts, feed) {
 			</div>
 
 			${footer()}
+		</div>
 	</body>
 </html>
 			`;

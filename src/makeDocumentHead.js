@@ -1,6 +1,7 @@
+//<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+// <script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>
 export default function makeDocumentHead(feed) {
 	return `
-<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 ${feed.fonts
 	.map(
@@ -20,9 +21,6 @@ ${feed.fonts
 <meta name="rating" content="General" />
 <meta name="referrer" content="no-referrer" />
 <meta name="robots" content="index,follow" />
-${
-	"" /*<script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>*/
-}
 <link rel="icon" sizes="16x16" href="/logos/Square@16.png" />
 <link rel="icon" sizes="32x32" href="/logos/Square@32.png" />
 <link rel="icon" sizes="64x64" href="/logos/Square@64.png" />
@@ -51,5 +49,6 @@ ${
 <meta property="og:description" content="${feed.subtitle}" />
 
 <link href="/main.css" rel="stylesheet">
+<link href="/tailwind.css" rel="stylesheet">
 `;
 }

@@ -3,7 +3,7 @@ function generateLink(to, children) {
 <a
 	rel="noopener noreferrer"
 	target="_blank"
-	href=${to}
+	href="${to}"
 	class= "p-1 hover:no-underline duration-300 py-2 block"
 >
 	${children}
@@ -34,7 +34,7 @@ function generateSpotifyLink(to) {
 function generateRssLink(to) {
 	return generateLink(
 		to,
-		`<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 8 8" > <rect width="8" height="8" fill="orange" className="button" rx="1.5" ></rect> <circle cx="2" cy="6" r="1" fill="#fff" className="symbol"></circle> <path fill="#fff" d="M1 4a3 3 0 013 3h1a4 4 0 00-4-4z" className="symbol" ></path> <path fill="#fff" d="M1 2a5 5 0 015 5h1a6 6 0 00-6-6z" className="symbol" ></path> </svg>`,
+		`<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 8 8" > <rect width="8" height="8" fill="orange" class="button" rx="1.5" ></rect> <circle cx="2" cy="6" r="1" fill="#fff" class="symbol"></circle> <path fill="#fff" d="M1 4a3 3 0 013 3h1a4 4 0 00-4-4z" class="symbol" ></path> <path fill="#fff" d="M1 2a5 5 0 015 5h1a6 6 0 00-6-6z" class="symbol" ></path> </svg>`,
 	);
 }
 
