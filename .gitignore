@@ -1,3 +1,4 @@
 /dist
 node_modules
 output
+tailwind.config.cjs
