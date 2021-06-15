@@ -4,50 +4,25 @@ import path from "path";
 import crypto from "crypto";
 import detectMime from "mime-types";
 
+import pathToReadStream from "./pathToReadStream.js";
+
 async function download(url, filePath) {
-	const proto = await (!url.charAt(4).localeCompare("s")
-		? import("https")
-		: import("http"));
+	const file = fsOld.createWriteStream(filePath);
+	const readStream = await pathToReadStream(url);
 
-	return new Promise((resolve, reject) => {
-		const file = fsOld.createWriteStream(filePath);
-		let fileInfo = null;
-
-		const request = proto.get(url, (response) => {
-			if (response.statusCode === 302) {
-				resolve(download(response.headers.location, filePath));
-				return;
-			}
-
-			if (response.statusCode !== 200) {
-				reject(
-					new Error(
-						`Failed to get '${url}' (${response.statusCode})`,
-					),
-				);
-				return;
-			}
-
-			fileInfo = {
-				mime: response.headers["content-type"],
-				size: parseInt(response.headers["content-length"], 10),
-			};
-
-			response.pipe(file);
-		});
+	await new Promise((done, fail) => {
+		readStream.pipe(file);
 
 		// The destination stream is ended by the time it's called
-		file.on("finish", () => resolve(fileInfo));
+		file.on("finish", done);
 
-		request.on("error", (err) => {
-			fsOld.unlink(filePath, () => reject(err));
+		readStream.on("error", (err) => {
+			fsOld.unlink(filePath, () => fail(err));
 		});
 
 		file.on("error", (err) => {
-			fs.unlink(filePath, () => reject(err));
+			fs.unlink(filePath, () => fail(err));
 		});
-
-		request.end();
 	});
 }
 
@@ -75,14 +50,14 @@ async function convertRemoteToLocal(opts, remoteUrl) {
 		opts["--out-dir"],
 		localPath,
 	);
-	const localDir = path.dirname(absoluteLocalPath);
+	const absoluteLocalDir = path.dirname(absoluteLocalPath);
 
-	await fs.mkdir(localDir, { recursive: true });
+	await fs.mkdir(absoluteLocalDir, { recursive: true });
 	const fileExistsLocally = await doesFileExist(absoluteLocalPath);
 
 	if (!fileExistsLocally) {
 		console.log(remoteUrl, "=>", localPath);
-		await download(remoteUrl, localPath);
+		await download(remoteUrl, absoluteLocalPath);
 	}
 
 	return localPath;

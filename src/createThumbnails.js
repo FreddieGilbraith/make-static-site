@@ -1,13 +1,14 @@
 import fs from "fs/promises";
+import fsOld from "fs";
 import path from "path";
 import sharp from "sharp";
 
+import pathToReadStream from "./pathToReadStream.js";
+
 export default async function createThumbnails(opts, feed) {
-	const sourceFilePath = path.join(
-		process.cwd(),
-		opts["--out-dir"],
-		feed.image,
-	);
+	const sourceFilePath = feed.image.startsWith("http")
+		? feed.image
+		: path.join(process.cwd(), opts["--out-dir"], feed.image);
 
 	const destinationFolder = path.join(
 		process.cwd(),
@@ -27,14 +28,15 @@ export default async function createThumbnails(opts, feed) {
 
 		console.log(sourceFilePath, "=>", destinationFilePath);
 
-		await new Promise((done, fail) =>
-			sharp(sourceFilePath)
-				.resize(dim, dim)
-				.toFile(destinationFilePath, (err, dat) =>
-					err ? fail(err) : done(dat),
-				),
-		);
-	}
+		await new Promise(async (done, fail) => {
+			const inStream = await pathToReadStream(sourceFilePath);
 
-	console.log(feed.image);
+			const stream = inStream
+				.pipe(sharp().resize(dim, dim))
+				.pipe(fsOld.createWriteStream(destinationFilePath));
+
+			stream.on("finish", done);
+			stream.on("error", fail);
+		});
+	}
 }
