@@ -36,7 +36,9 @@ function generateEpisodeLink(
 			</a >
 			<div class="text-gray-800 px-2">|</div>
 			<button
-				class="pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
+				data-title="${title}"
+				data-slug="${slug}"
+				class="lbz-share-button pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
 			>
 				share
 			</button>
@@ -70,6 +72,77 @@ function footer() {
 </footer>`;
 }
 
+function attemptShareScript(feed) {
+	return `<script>
+	async function attemptShare(event) {
+		const el = event.target;
+		const title = el.dataset.title;
+		const slug = el.dataset.slug;
+
+		const shareData = {
+			title,
+			url: [
+				"${feed.homepage}",
+				"episode",
+				slug
+			].join("/")
+		};
+
+		if (navigator.share) {
+			try {
+				await navigator.share(shareData);
+				el.textContent = "shared!";
+				el.classList.remove("hover:text-blue-700");
+				el.classList.remove("text-blue-900");
+				el.classList.add("hover:text-green-600");
+				el.classList.add("text-green-800");
+			} catch (e) {
+				el.textContent = "could not share";
+				el.classList.remove("hover:text-blue-700");
+				el.classList.remove("text-blue-900");
+				el.classList.add("hover:text-red-600");
+				el.classList.add("text-red-800");
+				console.error(e);
+			}
+
+			return;
+		}
+
+		if (true) {
+			try {
+				const urlElem = document.createElement("input");
+				urlElem.value = shareData.url;
+				urlElem.id = "temp-url-select";
+				document.body.appendChild(urlElem);
+
+				const elemInserted = document.getElementById("temp-url-select");
+				elemInserted.select();
+				document.execCommand("copy");
+				elemInserted.remove();
+
+				el.textContent = "coppied to clipboard!";
+				el.classList.remove("hover:text-blue-700");
+				el.classList.remove("text-blue-900");
+				el.classList.add("hover:text-green-600");
+				el.classList.add("text-green-800");
+			} catch (e) {
+				console.error(e);
+				el.textContent = "could not share";
+				el.classList.remove("hover:text-blue-700");
+				el.classList.remove("text-blue-900");
+				el.classList.add("hover:text-red-600");
+				el.classList.add("text-red-800");
+			}
+		}
+	}
+
+	document
+		.querySelectorAll(".lbz-share-button")
+		.forEach( buttonEl => { buttonEl.addEventListener("click", attemptShare)})
+
+	</script>`;
+}
+
 export default function generateHomepage(opts, feed) {
 	return `
 <html>
@@ -92,6 +165,9 @@ export default function generateHomepage(opts, feed) {
 
 			${footer()}
 		</div>
+
+		${attemptShareScript(feed)}
+	
 	</body>
 </html>
 			`;
