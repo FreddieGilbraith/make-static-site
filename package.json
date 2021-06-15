@@ -1,7 +1,7 @@
 {
 	"name": "@little-bonsai/make-static-project-site",
 	"type": "module",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "",
 	"main": "src/index.js",
 	"scripts": {
