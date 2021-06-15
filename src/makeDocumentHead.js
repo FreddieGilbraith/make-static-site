@@ -1,12 +1,17 @@
+import path from "path";
+
 //<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 // <script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>
 export default function makeDocumentHead(feed) {
 	return `
 
-${feed.fonts
+${feed.site.fonts
 	.map(
 		(font) =>
-			`<link rel="preload" href="/fonts${font}" as="font" crossorigin="anonymous" />`,
+			`<link rel="preload" href="${path.join(
+				"/fonts",
+				font,
+			)}" as="font" crossorigin="anonymous" />`,
 	)
 	.join("\n")}
 

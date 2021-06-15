@@ -14,32 +14,14 @@ function littleBonsaiPresents() {
 </p>`;
 }
 
-function logoArea() {
-	return `
-<a href="/" >
-	<h1 class="pt-4 font-plague text-5xl sm:text-5xl md:text-6xl" >
-		<span class="text-green-700"> Plague </span>
-		<span class="text-gray-800">Town</span>
-	</h1>
-</a >
-
-<h2 class="text-xl sm:text-2xl md:text-3xl pb-4">
-	A Coronavirus Comedy Podcast
-</h2>`;
-}
-
-function generateEpisodeLink({
-	slug,
-	title,
-	summary,
-	description,
-	image,
-	links,
-}) {
+function generateEpisodeLink(
+	feed,
+	{ slug, title, summary, description, image, links },
+) {
 	return `
 <div class="py-2"><hr class="border-gray-300" /></div>
 <div class="cursor-default hover:shadow max-w-2xl overflow-x-hidden py-2 px-1 relative shadow-none transition w-full episodePreviewContainer" >
-	<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-green-700 episodePreviewSlideout" ></div>
+	<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-${feed.site.color} episodePreviewSlideout" ></div>
 	<div class="px-3 flex flex-col z-20">
 		<a href="/episode/${slug}">
 			<h3 class="text-2xl">${title}</h3>
@@ -97,7 +79,7 @@ export default function generateHomepage(opts, feed) {
 		<div class="flex flex-col min-h-full w-100 items-center">
 			<header class="flex-col self-center flex items-center pb-4 pt-4" >
 				${littleBonsaiPresents()}
-				${logoArea()}
+				${feed.site.logoArea}
 				${generateLinkBlock({
 					...feed.links,
 					className: "justify-center text-4xl md:text-6xl py-4",
@@ -105,7 +87,7 @@ export default function generateHomepage(opts, feed) {
 			</header>
 
 			<div class="flex-1 items-stretch w-full max-w-2xl">
-				${feed.episodes.map(generateEpisodeLink).join("\n")}
+				${feed.episodes.map(generateEpisodeLink.bind(null, feed)).join("\n")}
 			</div>
 
 			${footer()}
