@@ -1,7 +1,7 @@
 {
 	"name": "@little-bonsai/make-static-project-site",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "",
 	"main": "src/index.js",
 	"scripts": {
@@ -16,7 +16,11 @@
 	"author": "",
 	"license": "ISC",
 	"sideEffects": false,
-	"files": ["/fonts", "/src", "/README.md"],
+	"files": [
+		"/fonts",
+		"/src",
+		"/README.md"
+	],
 	"eslintConfig": {
 		"extends": "@little-bonsai"
 	},
@@ -26,7 +30,9 @@
 		"useTabs": true,
 		"overrides": [
 			{
-				"files": ["**/*.md"],
+				"files": [
+					"**/*.md"
+				],
 				"options": {
 					"useTabs": false,
 					"tabWidth": 2
