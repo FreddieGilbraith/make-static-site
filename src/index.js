@@ -10,6 +10,7 @@ import generatePage from "./generatePage.js";
 import writeStylesheet from "./writeStylesheet.js";
 import runTailwind from "./runTailwind.js";
 import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.js";
+import createThumbnails from "./createThumbnails.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -57,6 +58,7 @@ async function main(opts) {
 	}
 
 	await writeStylesheet(opts);
+	await createThumbnails(opts, feed);
 	await runTailwind(opts);
 }
 
