@@ -39,4 +39,16 @@ export default async function createThumbnails(opts, feed) {
 			stream.on("error", fail);
 		});
 	}
+
+	if (opts["--for-hyper"]) {
+		const sourcePath = path.join(destinationFolder, `Square@256.png`);
+		const destPath = path.join(
+			process.cwd(),
+			opts["--out-dir"],
+			"thumb.png",
+		);
+
+		console.log(sourcePath, "=>", destPath);
+		await fs.copyFile(sourcePath, destPath);
+	}
 }
