@@ -23,7 +23,7 @@ async function writePage(opts, pagePath, html) {
 	await fs.mkdir(dirPath, { recursive: true });
 
 	const formattedHtml = prettier.format(html, { parser: "html" });
-
+	console.log("built", outPath);
 	await fs.writeFile(outPath, formattedHtml);
 }
 
