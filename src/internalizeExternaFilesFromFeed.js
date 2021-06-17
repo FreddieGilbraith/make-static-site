@@ -64,7 +64,7 @@ async function convertRemoteToLocal(opts, remoteUrl) {
 }
 
 export default async function internalizeExternaFilesFromFeed(opts, feed) {
-	if (!opts["--import-files"]) {
+	if (!opts["--for-hyper"]) {
 		return feed;
 	}
 	const convertAsset = convertRemoteToLocal.bind(null, opts);

@@ -67,7 +67,7 @@ main(
 		{
 			"--feed": String,
 			"--out-dir": String,
-			"--import-files": Boolean,
+			"--for-hyper": Boolean,
 		},
 		{ permissive: true, argv: process.argv.slice(2) },
 	),
