@@ -1,19 +1,29 @@
 import path from "path";
 
-//<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-// <script async="" data-no-cookie="true" data-api="/_hive" src="/bee.js" ></script>
-export default function makeDocumentHead(feed) {
+function makeSplitBee(opts) {
+	if (!opts["--for-hyper"]) {
+		return `<script async data-no-cookie="true" data-api="/_hive" src="/bee.js"></script>`;
+	}
+}
+
+function addFonts(feed) {
+	return feed.site.fonts
+		.map(
+			(font) =>
+				`<link rel="preload" href="${path.join(
+					"/fonts",
+					font,
+				)}" as="font" crossorigin="anonymous" />`,
+		)
+		.join("\n");
+}
+
+export default function makeDocumentHead(opts, feed) {
 	return `
 
-${feed.site.fonts
-	.map(
-		(font) =>
-			`<link rel="preload" href="${path.join(
-				"/fonts",
-				font,
-			)}" as="font" crossorigin="anonymous" />`,
-	)
-	.join("\n")}
+${makeSplitBee(opts)}
+
+${addFonts(feed)}
 
 <link
 	rel="alternate"

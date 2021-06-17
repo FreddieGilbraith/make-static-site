@@ -146,7 +146,7 @@ function attemptShareScript(feed) {
 export default function generateHomepage(opts, feed) {
 	return `
 <html>
-	<head>${makeDocumentHead(feed)}</head>
+	<head>${makeDocumentHead(opts, feed)}</head>
 
 	<body>
 		<div class="flex flex-col min-h-full w-100 items-center">
