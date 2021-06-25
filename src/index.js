@@ -7,6 +7,7 @@ import path from "path";
 import prettier from "prettier";
 import { mergeDeepLeft } from "ramda";
 
+import generateLogoPage from "./generateLogoPage.js";
 import generatePage from "./generatePage.js";
 import writeStylesheet from "./writeStylesheet.js";
 import runTailwind from "./runTailwind.js";
@@ -43,18 +44,26 @@ async function main(opts) {
 
 	await fs.mkdir(opts["--out-dir"], { recursive: true });
 
-	await writePage(opts, "/", generatePage(opts, feed));
+	//await writePage(opts, "/", generatePage(opts, feed));
 
-	for (const episode of feed.episodes) {
+	//for (const episode of feed.episodes) {
+	//await writePage(
+	//opts,
+	//`/episode/${episode.slug}`,
+	//generatePage(opts, generateFeedForEpisodePage(feed, episode)),
+	//);
+	//}
+
+	if (opts["--logo-template"]) {
 		await writePage(
 			opts,
-			`/episode/${episode.slug}`,
-			generatePage(opts, generateFeedForEpisodePage(feed, episode)),
+			`/logo-generator`,
+			await generateLogoPage(opts, feed),
 		);
 	}
 
 	await writeStylesheet(opts);
-	await createThumbnails(opts, feed);
+	//await createThumbnails(opts, feed);
 	await runTailwind(opts);
 }
 
@@ -63,6 +72,7 @@ main(
 		{
 			"--feed": String,
 			"--out-dir": String,
+			"--logo-template": String,
 			"--for-hyper": Boolean,
 		},
 		{ permissive: true, argv: process.argv.slice(2) },
