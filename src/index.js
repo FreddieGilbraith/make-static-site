@@ -5,6 +5,7 @@ import toml from "@iarna/toml";
 import fs from "fs/promises";
 import path from "path";
 import prettier from "prettier";
+import { mergeDeepLeft } from "ramda";
 
 import generatePage from "./generatePage.js";
 import writeStylesheet from "./writeStylesheet.js";
@@ -29,12 +30,7 @@ async function writePage(opts, pagePath, html) {
 
 function generateFeedForEpisodePage(feed, episode) {
 	return {
-		...feed,
-		...episode,
-		links: {
-			...feed.links,
-			...episode.links,
-		},
+		...mergeDeepLeft(feed, episode),
 		episodes: [episode],
 	};
 }

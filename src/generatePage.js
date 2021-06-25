@@ -16,7 +16,7 @@ function littleBonsaiPresents() {
 
 function generateEpisodeLink(
 	feed,
-	{ slug, title, summary, description, image, links },
+	{ slug, title, summary, description, media },
 ) {
 	return `
 <div class="py-2"><hr class="border-gray-300" /></div>
@@ -29,7 +29,7 @@ function generateEpisodeLink(
 		<div class="flex">
 			<a
 				class="pointer-events-auto cursor-pointer underline text-blue-900 hover:text-blue-700 hover:bold"
-				href="${links.rss}"
+				href="${media.audio}"
 				title="listen"
 			>
 				listen
