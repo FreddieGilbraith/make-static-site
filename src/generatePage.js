@@ -14,38 +14,68 @@ function littleBonsaiPresents() {
 </p>`;
 }
 
-function generateEpisodeLink(
-	feed,
-	{ slug, title, summary, description, media },
-) {
-	return `
-<div class="py-2"><hr class="border-gray-300" /></div>
-<div class="cursor-default hover:shadow max-w-2xl overflow-x-hidden py-2 px-1 relative shadow-none transition w-full episodePreviewContainer" >
-	<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-${feed.site.color} episodePreviewSlideout" ></div>
-	<div class="px-3 flex flex-col z-20">
-		<a href="/episode/${slug}">
-			<h3 class="text-2xl">${title}</h3>
-		</a >
-		<div class="flex">
+function generateEpisodeThumb(opts, image) {
+	if (opts["--episode-images"] && image) {
+		return `<img src="${image}" class="w-32 h-32 mr-2 shadow"/>`;
+	} else {
+		return "";
+	}
+}
+
+function generateListenLink(episode) {
+	if (episode?.links?.listen) {
+		return `
 			<a
 				class="pointer-events-auto cursor-pointer underline text-blue-900 hover:text-blue-700 hover:bold"
-				href="${media.audio}"
+				href="${episode?.listen}"
 				title="listen"
 			>
 				listen
-			</a >
-			<div class="text-gray-800 px-2">|</div>
-			<button
-				data-title="${title}"
-				data-slug="${slug}"
-				class="lbz-share-button pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
-			>
-				share
-			</button>
-		</div>
+			</a> `;
+	}
+}
 
-		<div class="pt-1">
-			${summary}
+function generateEpisodeLink(opts, feed, episode) {
+	const { links, slug, title, summary, description, media, site } = episode;
+
+	return `
+<div class="py-2"><hr class="border-gray-300" /></div>
+<div class="cursor-default hover:shadow max-w-2xl overflow-x-hidden py-2 px-1 relative shadow-none transition w-full episodePreviewContainer" >
+	<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-${
+		site?.color || feed.site.color
+	} episodePreviewSlideout" ></div>
+	<div class="px-3 flex flex-row z-20">
+		${generateEpisodeThumb(opts, site?.image)}
+
+		<div class="flex flex-col">
+			<a href="${links?.homepage ?? `/episode/${slug}`}">
+				<h3 class="text-2xl pb-1">
+					 <span class="border-b-2 border-solid
+						hover:bold transition-color hover:border-blue-700 border-blue-900"
+					 >
+						${title}
+					</span>
+				</h3>
+			</a>
+
+			<div class="flex">
+				${[
+					generateListenLink(episode),
+					`<button
+						data-title="${title}"
+						data-slug="${slug}"
+						class="lbz-share-button pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
+					>
+						share
+					</button>`,
+				]
+					.filter(Boolean)
+					.join(` <div class="text-gray-800 px-2">|</div>`)}
+			</div>
+
+			<div class="pt-1">
+				${summary}
+			</div>
 		</div>
 	</div>
 </div>`;
@@ -160,7 +190,7 @@ export default function generateHomepage(opts, feed) {
 			</header>
 
 			<div class="flex-1 items-stretch w-full max-w-2xl">
-				${feed.episodes.map(generateEpisodeLink.bind(null, feed)).join("\n")}
+				${feed.episodes.map(generateEpisodeLink.bind(null, opts, feed)).join("\n")}
 			</div>
 
 			${footer()}

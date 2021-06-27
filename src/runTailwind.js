@@ -25,9 +25,9 @@ async function runTailwindCmd(opts) {
 
 	const args = [
 		"build",
-		"-c",
+		"--config",
 		path.join(process.cwd(), "tailwind.config.cjs"),
-		"--o",
+		"--output",
 		path.join(opts["--out-dir"], "tailwind.css"),
 	];
 
