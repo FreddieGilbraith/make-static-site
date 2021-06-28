@@ -1,22 +1,23 @@
 import makeDocumentHead from "./makeDocumentHead.js";
 import generateLinkBlock from "./generateLinkBlock.js";
 
-function littleBonsaiPresents() {
-	return `
-<p class="text-lg font-lbz py-2">
-	<a
-		class="underline text-blue-900 hover:text-blue-700 hover:bold"
-		href="https://littlebonsai.co.uk"
-	>
-		little bonsai
-	</a >
-	presents
-</p>`;
+function littleBonsaiPresents(feed) {
+	if (feed.site.showLBZLink) {
+		return `
+			<p class="text-lg font-lbz py-2">
+				<a
+					class="underline text-blue-900 hover:text-blue-700 hover:bold"
+					href="https://littlebonsai.co.uk"
+				>little bonsai</a> presents
+			</p>`;
+	} else {
+		return "";
+	}
 }
 
-function generateEpisodeThumb(opts, image) {
-	if (opts["--episode-images"] && image) {
-		return `<img src="${image}" class="w-32 h-32 mr-2 shadow"/>`;
+function generateEpisodeThumb(feed, image) {
+	if (feed.site.showThumbs) {
+		return `<img src="${image}" class="w-32 h-32 mr-2 shadow-lg"/>`;
 	} else {
 		return "";
 	}
@@ -27,11 +28,24 @@ function generateListenLink(episode) {
 		return `
 			<a
 				class="pointer-events-auto cursor-pointer underline text-blue-900 hover:text-blue-700 hover:bold"
-				href="${episode?.listen}"
+				href="${episode.links.listen}"
 				title="listen"
 			>
 				listen
 			</a> `;
+	}
+}
+
+function generateShareLink(feed, { title, slug }) {
+	if (feed?.site?.showShare) {
+		return `
+			<button
+				data-title="${title}"
+				data-slug="${slug}"
+				class="lbz-share-button pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
+			>
+				share
+			</button>`;
 	}
 }
 
@@ -45,7 +59,7 @@ function generateEpisodeLink(opts, feed, episode) {
 		site?.color || feed.site.color
 	} episodePreviewSlideout" ></div>
 	<div class="px-3 flex flex-row z-20">
-		${generateEpisodeThumb(opts, site?.image)}
+		${generateEpisodeThumb(feed, site?.image)}
 
 		<div class="flex flex-col">
 			<a href="${links?.homepage ?? `/episode/${slug}`}">
@@ -59,16 +73,7 @@ function generateEpisodeLink(opts, feed, episode) {
 			</a>
 
 			<div class="flex">
-				${[
-					generateListenLink(episode),
-					`<button
-						data-title="${title}"
-						data-slug="${slug}"
-						class="lbz-share-button pointer-events-auto cursor-pointer underline hover:bold transition-color hover:text-blue-700 text-blue-900"
-					>
-						share
-					</button>`,
-				]
+				${[generateListenLink(episode), generateShareLink(feed, episode)]
 					.filter(Boolean)
 					.join(` <div class="text-gray-800 px-2">|</div>`)}
 			</div>
@@ -178,10 +183,10 @@ export default function generateHomepage(opts, feed) {
 <html>
 	<head>${makeDocumentHead(opts, feed)}</head>
 
-	<body>
+	<body class="font-lbz">
 		<div class="flex flex-col min-h-full w-100 items-center">
 			<header class="flex-col self-center flex items-center pb-4 pt-4" >
-				${littleBonsaiPresents()}
+				${littleBonsaiPresents(feed)}
 				${feed.site.logoArea}
 				${generateLinkBlock({
 					...feed.links,

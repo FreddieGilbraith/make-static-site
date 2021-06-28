@@ -25,12 +25,23 @@ ${makeSplitBee(opts)}
 
 ${addFonts(feed)}
 
-<link
-	rel="alternate"
-	type="application/rss+xml"
-	title="Subscribe"
-	href="${feed.links.rss}"
-/>
+${
+	feed.links.rss
+		? `
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="Subscribe"
+			href="${feed.links.rss}"
+		/>`
+		: ""
+}
+
+${
+	feed.links.itunes
+		? `<meta name="apple-itunes-app" content="app-id=${feed.links.itunes.url}" />`
+		: ""
+}
 
 <meta name="googlebot" content="index,follow" />
 <meta name="rating" content="General" />
@@ -46,7 +57,6 @@ ${addFonts(feed)}
 <link rel="apple-touch-icon" href="/logos/Square@192.png" />
 <meta name="viewport" content="width=device-width" />
 <meta charset="utf-8" />
-<meta name="apple-itunes-app" content="app-id=${feed.links.itunes.url}" />
 <meta name="twitter:site" content="@TheLittleBonsai" />
 <meta name="twitter:creator" content="@TheLittleBonsai" />
 <meta name="og:url" content="${feed.homepage}" />

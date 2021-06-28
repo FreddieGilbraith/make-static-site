@@ -47,11 +47,13 @@ async function main(opts) {
 	await writePage(opts, "/", generatePage(opts, feed));
 
 	for (const episode of feed.episodes) {
-		await writePage(
-			opts,
-			`/episode/${episode.slug}`,
-			generatePage(opts, generateFeedForEpisodePage(feed, episode)),
-		);
+		if (episode.slug) {
+			await writePage(
+				opts,
+				`/episode/${episode.slug}`,
+				generatePage(opts, generateFeedForEpisodePage(feed, episode)),
+			);
+		}
 	}
 
 	if (opts["--logo-template"]) {
@@ -74,7 +76,6 @@ main(
 			"--out-dir": String,
 			"--logo-template": String,
 			"--for-hyper": Boolean,
-			"--episode-images": Boolean,
 		},
 		{ permissive: true, argv: process.argv.slice(2) },
 	),
