@@ -65,7 +65,7 @@ async function main(opts) {
 	}
 
 	await writeStylesheet(opts);
-	await createThumbnails(opts, feed);
+	//await createThumbnails(opts, feed);
 	await runTailwind(opts);
 }
 

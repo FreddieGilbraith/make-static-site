@@ -1,13 +1,17 @@
 import makeDocumentHead from "./makeDocumentHead.js";
 import generateLinkBlock from "./generateLinkBlock.js";
 
-function littleBonsaiPresents(feed) {
+function littleBonsaiPresents(opts, feed) {
 	if (feed.site.showLBZLink) {
+		const href = opts["--for-hyper"] ? 
+			"hyper://ba3ed57984ad4e9f02bf77363508af17ee326bc5e472afc0a689c444c7d1c436/"
+			: "https://littlebonsai.co.uk";
+
 		return `
 			<p class="text-lg font-lbz py-2">
 				<a
 					class="underline text-blue-900 hover:text-blue-700 hover:bold"
-					href="https://littlebonsai.co.uk"
+					href="${href}"
 				>little bonsai</a> presents
 			</p>`;
 	} else {
@@ -52,6 +56,11 @@ function generateShareLink(feed, { title, slug }) {
 function generateEpisodeLink(opts, feed, episode) {
 	const { links, slug, title, summary, description, media, site } = episode;
 
+	const href = (opts["--for-hyper"] ? 
+links?.hyperpage :
+		links?.homepage) ?? 
+`/episode/${slug}`;
+
 	return `
 <div class="py-2"><hr class="border-gray-300" /></div>
 <div class="cursor-default hover:shadow max-w-2xl overflow-x-hidden py-2 px-1 relative shadow-none transition w-full episodePreviewContainer" >
@@ -62,7 +71,7 @@ function generateEpisodeLink(opts, feed, episode) {
 		${generateEpisodeThumb(feed, site?.image)}
 
 		<div class="flex flex-col">
-			<a href="${links?.homepage ?? `/episode/${slug}`}">
+			<a href="${ href }">
 				<h3 class="text-2xl pb-1">
 					 <span class="border-b-2 border-solid
 						hover:bold transition-color hover:border-blue-700 border-blue-900"
@@ -186,7 +195,7 @@ export default function generateHomepage(opts, feed) {
 	<body class="font-lbz">
 		<div class="flex flex-col min-h-full w-100 items-center">
 			<header class="flex-col self-center flex items-center pb-4 pt-4" >
-				${littleBonsaiPresents(feed)}
+				${littleBonsaiPresents(opts, feed)}
 				${feed.site.logoArea}
 				${generateLinkBlock({
 					...feed.links,
