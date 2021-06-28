@@ -13,6 +13,11 @@ function generateStylesheet(opts) {
 	src: url('/fonts/SpecialElite-Regular.ttf');
 }
 
+@font-face {
+	font-family: 'Overlock';
+	src: url('/fonts/Overlock-Regular.ttf');
+}
+
 html, body, #__next {
 	height: 100%;
 	min-height: 100%;
