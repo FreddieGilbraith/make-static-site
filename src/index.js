@@ -15,6 +15,15 @@ import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.j
 import runTailwind from "./runTailwind.js";
 import writeStylesheet from "./writeStylesheet.js";
 
+async function doesFileExist(filePath) {
+	try {
+		await fs.access(filePath);
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
 		process.cwd(),
@@ -26,8 +35,17 @@ async function writePage(opts, pagePath, html) {
 	await fs.mkdir(dirPath, { recursive: true });
 
 	const formattedHtml = prettier.format(html, { parser: "html" });
-	console.log("built", outPath);
-	await fs.writeFile(outPath, formattedHtml);
+
+	const existingHTML = await doesFileExist(outPath).then((exists) =>
+		exists ? fs.readFile(outPath, "utf8") : "",
+	);
+
+	if (formattedHtml === existingHTML) {
+		console.log("skipped", outPath);
+	} else {
+		await fs.writeFile(outPath, formattedHtml);
+		console.log("built", outPath);
+	}
 }
 
 function generateFeedForEpisodePage(feed, episode) {
@@ -48,10 +66,9 @@ async function main(opts) {
 	await writePage(opts, "/", generatePage(opts, feed));
 
 	await Promise.all(
-		feed.episodes.map((episode) => {
-			console.log(episode.slug);
+		feed.episodes.map(async (episode) => {
 			if (episode.slug) {
-				return writePage(
+				await writePage(
 					opts,
 					`/episode/${episode.slug}`,
 					generatePage(
@@ -60,8 +77,6 @@ async function main(opts) {
 					),
 				);
 			}
-
-			return Promise.resolve();
 		}),
 	);
 
@@ -74,7 +89,7 @@ async function main(opts) {
 	}
 
 	await writeStylesheet(opts);
-	//await createThumbnails(opts, feed);
+	await createThumbnails(opts, feed);
 	await runTailwind(opts);
 	await createVercelBoilerplate(opts);
 }

@@ -5,6 +5,15 @@ import sharp from "sharp";
 
 import pathToReadStream from "./pathToReadStream.js";
 
+async function doesFileExist(filePath) {
+	try {
+		await fs.access(filePath);
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+
 export default async function createThumbnails(opts, feed) {
 	const sourceFilePath = feed.image.startsWith("http")
 		? feed.image
@@ -18,27 +27,33 @@ export default async function createThumbnails(opts, feed) {
 
 	await fs.mkdir(destinationFolder, { recursive: true });
 
-	for (const x of [4, 5, 6, 7, 8, 9, 10]) {
-		const dim = Math.pow(2, x);
+	await Promise.all(
+		[4, 5, 6, 7, 8, 9, 10].map(async (x) => {
+			const dim = Math.pow(2, x);
 
-		const destinationFilePath = path.join(
-			destinationFolder,
-			`Square@${dim}.png`,
-		);
+			const destinationFilePath = path.join(
+				destinationFolder,
+				`Square@${dim}.png`,
+			);
 
-		console.log(sourceFilePath, "=>", destinationFilePath);
+			if (await doesFileExist(destinationFilePath)) {
+				console.log("skipped", destinationFilePath);
+				return;
+			}
 
-		await new Promise(async (done, fail) => {
-			const inStream = await pathToReadStream(sourceFilePath);
+			await new Promise(async (done, fail) => {
+				const inStream = await pathToReadStream(sourceFilePath);
 
-			const stream = inStream
-				.pipe(sharp().resize(dim, dim))
-				.pipe(fsOld.createWriteStream(destinationFilePath));
+				const stream = inStream
+					.pipe(sharp().resize(dim, dim))
+					.pipe(fsOld.createWriteStream(destinationFilePath));
 
-			stream.on("finish", done);
-			stream.on("error", fail);
-		});
-	}
+				stream.on("finish", done);
+				stream.on("error", fail);
+			});
+			console.log(sourceFilePath, "=>", destinationFilePath);
+		}),
+	);
 
 	if (opts["--for-hyper"]) {
 		const sourcePath = path.join(destinationFolder, `Square@256.png`);
@@ -48,6 +63,10 @@ export default async function createThumbnails(opts, feed) {
 			"thumb.png",
 		);
 
+		if (doesFileExist(destPath)) {
+			console.log("skipped", destPath);
+			return;
+		}
 		console.log(sourcePath, "=>", destPath);
 		await fs.copyFile(sourcePath, destPath);
 	}
