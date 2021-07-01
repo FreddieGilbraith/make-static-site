@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 import arg from "arg";
-import toml from "@iarna/toml";
 import fs from "fs/promises";
 import path from "path";
 import prettier from "prettier";
+import toml from "@iarna/toml";
 import { mergeDeepLeft } from "ramda";
 
+import createHyperIndexJson from "./createHyperIndexJson.js";
 import createThumbnails from "./createThumbnails.js";
 import createVercelBoilerplate from "./createVercelBoilerplate.js";
 import generateLogoPage from "./generateLogoPage.js";
@@ -14,15 +15,7 @@ import generatePage from "./generatePage.js";
 import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.js";
 import runTailwind from "./runTailwind.js";
 import writeStylesheet from "./writeStylesheet.js";
-
-async function doesFileExist(filePath) {
-	try {
-		await fs.access(filePath);
-		return true;
-	} catch (e) {
-		return false;
-	}
-}
+import doesFileExist from "./doesFileExist.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -89,8 +82,10 @@ async function main(opts) {
 	}
 
 	await writeStylesheet(opts);
-	await createThumbnails(opts, feed);
 	await runTailwind(opts);
+
+	await createThumbnails(opts, feed);
+	await createHyperIndexJson(opts, feed);
 	await createVercelBoilerplate(opts);
 }
 

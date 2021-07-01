@@ -56,8 +56,8 @@ async function convertRemoteToLocal(opts, remoteUrl) {
 	const fileExistsLocally = await doesFileExist(absoluteLocalPath);
 
 	if (!fileExistsLocally) {
-		console.log(remoteUrl, "=>", localPath);
 		await download(remoteUrl, absoluteLocalPath);
+		console.log(remoteUrl, "=>", localPath);
 	}
 
 	return localPath;
