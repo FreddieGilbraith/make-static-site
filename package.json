@@ -11,7 +11,7 @@
 		"prepublishOnly": "npm run format"
 	},
 	"bin": {
-		"make-staic-site": "src/index.js"
+		"make-static-site": "src/index.js"
 	},
 	"author": "",
 	"license": "ISC",

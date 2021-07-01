@@ -47,19 +47,23 @@ async function main(opts) {
 
 	await writePage(opts, "/", generatePage(opts, feed));
 
-	await Promise.all( feed.episodes.map( episode => {
-		console.log(episode.slug);
-		if (episode.slug) {
-			return writePage(
-				opts,
-				`/episode/${episode.slug}`,
-				generatePage(opts, generateFeedForEpisodePage(feed, episode)),
-			);
-		} 
+	await Promise.all(
+		feed.episodes.map((episode) => {
+			console.log(episode.slug);
+			if (episode.slug) {
+				return writePage(
+					opts,
+					`/episode/${episode.slug}`,
+					generatePage(
+						opts,
+						generateFeedForEpisodePage(feed, episode),
+					),
+				);
+			}
 
-		return Promise.resolve();
-	}
-	));
+			return Promise.resolve();
+		}),
+	);
 
 	if (opts["--logo-template"]) {
 		await writePage(
