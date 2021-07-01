@@ -67,11 +67,15 @@ export default async function internalizeExternaFilesFromFeed(opts, feed) {
 	if (!opts["--for-hyper"]) {
 		return feed;
 	}
+
 	const convertAsset = convertRemoteToLocal.bind(null, opts);
 
 	feed.image = await convertAsset(feed.image);
 
 	for (const episode of feed.episodes) {
+		if (episode?.site?.image) {
+			episode.site.image = await convertAsset(episode?.site?.image);
+		}
 		if (episode?.media?.image) {
 			episode.media.image = await convertAsset(episode?.media?.image);
 		}
