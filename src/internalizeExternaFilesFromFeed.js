@@ -73,6 +73,9 @@ export default async function internalizeExternaFilesFromFeed(opts, feed) {
 	feed.image = await convertAsset(feed.image);
 
 	for (const episode of feed.episodes) {
+		if (episode?.links?.listen) {
+			episode.links.listen = await convertAsset(episode?.links?.listen);
+		}
 		if (episode?.site?.image) {
 			episode.site.image = await convertAsset(episode?.site?.image);
 		}
