@@ -60,7 +60,7 @@ async function convertRemoteToLocal(opts, remoteUrl) {
 		await download(remoteUrl, absoluteLocalPath);
 	}
 
-		return localPath;
+	return localPath;
 }
 
 export default async function internalizeExternaFilesFromFeed(opts, feed) {
@@ -72,10 +72,10 @@ export default async function internalizeExternaFilesFromFeed(opts, feed) {
 	feed.image = await convertAsset(feed.image);
 
 	for (const episode of feed.episodes) {
-		if(episode?.media?.image){
+		if (episode?.media?.image) {
 			episode.media.image = await convertAsset(episode?.media?.image);
 		}
-		if(episode?.media?.audio){
+		if (episode?.media?.audio) {
 			episode.media.audio = await convertAsset(episode?.media?.audio);
 		}
 	}

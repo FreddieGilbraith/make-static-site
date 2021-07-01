@@ -7,12 +7,13 @@ import path from "path";
 import prettier from "prettier";
 import { mergeDeepLeft } from "ramda";
 
+import createThumbnails from "./createThumbnails.js";
+import createVercelBoilerplate from "./createVercelBoilerplate.js";
 import generateLogoPage from "./generateLogoPage.js";
 import generatePage from "./generatePage.js";
-import writeStylesheet from "./writeStylesheet.js";
-import runTailwind from "./runTailwind.js";
 import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.js";
-import createThumbnails from "./createThumbnails.js";
+import runTailwind from "./runTailwind.js";
+import writeStylesheet from "./writeStylesheet.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -46,15 +47,19 @@ async function main(opts) {
 
 	await writePage(opts, "/", generatePage(opts, feed));
 
-	for (const episode of feed.episodes) {
+	await Promise.all( feed.episodes.map( episode => {
+		console.log(episode.slug);
 		if (episode.slug) {
-			await writePage(
+			return writePage(
 				opts,
 				`/episode/${episode.slug}`,
 				generatePage(opts, generateFeedForEpisodePage(feed, episode)),
 			);
-		}
+		} 
+
+		return Promise.resolve();
 	}
+	));
 
 	if (opts["--logo-template"]) {
 		await writePage(
@@ -67,6 +72,7 @@ async function main(opts) {
 	await writeStylesheet(opts);
 	//await createThumbnails(opts, feed);
 	await runTailwind(opts);
+	await createVercelBoilerplate(opts);
 }
 
 main(
@@ -76,6 +82,7 @@ main(
 			"--out-dir": String,
 			"--logo-template": String,
 			"--for-hyper": Boolean,
+			"--for-vercel": Boolean,
 		},
 		{ permissive: true, argv: process.argv.slice(2) },
 	),

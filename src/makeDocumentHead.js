@@ -4,7 +4,7 @@ function makeSplitBee(opts) {
 	if (!opts["--for-hyper"]) {
 		return `<script async data-no-cookie="true" data-api="/_hive" src="/bee.js"></script>`;
 	}
-	return ""
+	return "";
 }
 
 function addFonts(feed) {

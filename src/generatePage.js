@@ -3,8 +3,8 @@ import generateLinkBlock from "./generateLinkBlock.js";
 
 function littleBonsaiPresents(opts, feed) {
 	if (feed.site.showLBZLink) {
-		const href = opts["--for-hyper"] ? 
-			"hyper://ba3ed57984ad4e9f02bf77363508af17ee326bc5e472afc0a689c444c7d1c436/"
+		const href = opts["--for-hyper"]
+			? "hyper://ba3ed57984ad4e9f02bf77363508af17ee326bc5e472afc0a689c444c7d1c436/"
 			: "https://littlebonsai.co.uk";
 
 		return `
@@ -56,10 +56,9 @@ function generateShareLink(feed, { title, slug }) {
 function generateEpisodeLink(opts, feed, episode) {
 	const { links, slug, title, summary, description, media, site } = episode;
 
-	const href = (opts["--for-hyper"] ? 
-links?.hyperpage :
-		links?.homepage) ?? 
-`/episode/${slug}`;
+	const href =
+		(opts["--for-hyper"] ? links?.hyperpage : links?.homepage) ??
+		`/episode/${slug}`;
 
 	return `
 <div class="py-2"><hr class="border-gray-300" /></div>
@@ -71,7 +70,7 @@ links?.hyperpage :
 		${generateEpisodeThumb(feed, site?.image)}
 
 		<div class="flex flex-col">
-			<a href="${ href }">
+			<a href="${href}">
 				<h3 class="text-2xl pb-1">
 					 <span class="border-b-2 border-solid
 						hover:bold transition-color hover:border-blue-700 border-blue-900"
