@@ -3,20 +3,11 @@ import path from "path";
 
 function generateStylesheet(opts) {
 	return `
-@font-face {
-	font-family: 'Comfortaa';
-	src: url('/fonts/Comfortaa-Regular.ttf');
-}
-
-@font-face {
-	font-family: 'SpecialElite';
-	src: url('/fonts/SpecialElite-Regular.ttf');
-}
-
-@font-face {
-	font-family: 'Overlock';
-	src: url('/fonts/Overlock-Regular.ttf');
-}
+@font-face { font-family: 'BlackBruno'; src: url('/fonts/BlackBruno-jErGG.ttf'); }
+@font-face { font-family: 'Comfortaa'; src: url('/fonts/Comfortaa-Regular.ttf'); }
+@font-face { font-family: 'Overlock'; src: url('/fonts/Overlock-Regular.ttf'); } 
+@font-face { font-family: 'RockSalt'; src: url('/fonts/RockSalt-Regular.ttf'); } 
+@font-face { font-family: 'SpecialElite'; src: url('/fonts/SpecialElite-Regular.ttf'); }
 
 html, body, #__next {
 	height: 100%;
