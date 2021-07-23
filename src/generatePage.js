@@ -53,19 +53,27 @@ function generateShareLink(feed, { title, slug }) {
 	}
 }
 
-function generateEpisodeLink(opts, feed, episode) {
+function generateEpisodeLink(opts, feed, isEpisodePage, episode) {
 	const { links, slug, title, summary, description, media, site } = episode;
 
 	const href =
 		(opts["--for-hyper"] ? links?.hyperpage : links?.homepage) ??
 		`/episode/${slug}`;
 
+	const body = isEpisodePage ? description : summary;
+
 	return `
 <div class="py-2"><hr class="border-gray-300" /></div>
 <div class="cursor-default hover:shadow max-w-2xl overflow-x-hidden py-2 px-1 relative shadow-none transition w-full episodePreviewContainer" >
-	<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-${
-		site?.color || feed.site.color
-	} episodePreviewSlideout" ></div>
+
+	${
+		isEpisodePage
+			? ""
+			: `<div class="pointer-events-none -translate-x-2 absolute inset-0 border-l-8 px-1 transform transition-transform z-10 border-${
+					site?.color || feed.site.color
+			  } episodePreviewSlideout" ></div>`
+	}
+
 	<div class="px-3 flex flex-row z-20">
 		${generateEpisodeThumb(feed, site?.image)}
 
@@ -86,8 +94,8 @@ function generateEpisodeLink(opts, feed, episode) {
 					.join(` <div class="text-gray-800 px-2">|</div>`)}
 			</div>
 
-			<div class="pt-1">
-				${summary}
+			<div class="pt-1 episode-block text-lg" >
+				${body || ""}
 			</div>
 		</div>
 	</div>
@@ -186,7 +194,7 @@ function attemptShareScript(feed) {
 	</script>`;
 }
 
-export default function generateHomepage(opts, feed) {
+export default function generateHomepage(opts, feed, isEpisodePage) {
 	return `
 <html>
 	<head>${makeDocumentHead(opts, feed)}</head>
@@ -203,7 +211,16 @@ export default function generateHomepage(opts, feed) {
 			</header>
 
 			<div class="flex-1 items-stretch w-full max-w-2xl">
-				${feed.episodes.map(generateEpisodeLink.bind(null, opts, feed)).join("\n")}
+				${feed.episodes
+					.map(
+						generateEpisodeLink.bind(
+							null,
+							opts,
+							feed,
+							isEpisodePage,
+						),
+					)
+					.join("\n")}
 			</div>
 
 			${footer()}

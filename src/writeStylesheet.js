@@ -16,7 +16,13 @@ html, body, #__next {
 
 .episodePreviewContainer:hover > .episodePreviewSlideout {
 	--tw-translate-x: 0rem;
-}`;
+}
+
+.episode-block > p {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+`;
 }
 
 async function copyFontFiles(opts) {

@@ -67,6 +67,7 @@ async function main(opts) {
 					generatePage(
 						opts,
 						generateFeedForEpisodePage(feed, episode),
+						true,
 					),
 				);
 			}
