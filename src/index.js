@@ -8,14 +8,15 @@ import toml from "@iarna/toml";
 import { mergeDeepLeft } from "ramda";
 
 import createHyperIndexJson from "./createHyperIndexJson.js";
+import createSpodisafeRssFeed from "./createSpodisafeRssFeed.js";
 import createThumbnails from "./createThumbnails.js";
 import createVercelBoilerplate from "./createVercelBoilerplate.js";
+import doesFileExist from "./doesFileExist.js";
 import generateLogoPage from "./generateLogoPage.js";
 import generatePage from "./generatePage.js";
 import internalizeExternaFilesFromFeed from "./internalizeExternaFilesFromFeed.js";
 import runTailwind from "./runTailwind.js";
 import writeStylesheet from "./writeStylesheet.js";
-import doesFileExist from "./doesFileExist.js";
 
 async function writePage(opts, pagePath, html) {
 	const outPath = path.join(
@@ -24,6 +25,7 @@ async function writePage(opts, pagePath, html) {
 		pagePath,
 		"index.html",
 	);
+
 	const dirPath = path.dirname(outPath);
 	await fs.mkdir(dirPath, { recursive: true });
 
@@ -88,6 +90,8 @@ async function main(opts) {
 	await createThumbnails(opts, feed);
 	await createHyperIndexJson(opts, feed);
 	await createVercelBoilerplate(opts);
+
+	await createSpodisafeRssFeed(opts, feed);
 }
 
 main(
